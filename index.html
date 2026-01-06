@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Báo Cáo Học Sinh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============== RESET + THEME ============== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #1a1a1a;
+      background: #fafafa;
+      font-family: Inter, system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* ============== CONTAINER ============== */
+    .wrapper { 
+      max-width: 900px; 
+      margin: 0 auto; 
+      padding: 40px 20px;
+    }
+
+    /* ============== HERO ============== */
+    .hero {
+      text-align: center;
+      margin-bottom: 48px;
+      padding: 24px 0;
+    }
+    .hero-headline {
+      font-size: clamp(28px, 5vw, 36px);
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+    }
+    .hero-sub {
+      font-size: 16px;
+      color: #666;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ============== CARD ============== */
+    .card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 20px;
+    }
+    .card h2 { 
+      font-size: 20px; 
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: #1a1a1a;
+    }
+
+    /* ============== FORM ============== */
+    .form-group { 
+      margin-bottom: 20px;
+    }
+    .label { 
+      display: block; 
+      font-size: 14px; 
+      font-weight: 500; 
+      color: #333;
+      margin-bottom: 6px;
+    }
+    .input, .textarea {
+      width: 100%; 
+      padding: 10px 14px; 
+      border-radius: 8px;
+      border: 1px solid #d4d4d4; 
+      background: #fff; 
+      color: #1a1a1a;
+      outline: none; 
+      transition: border-color .2s, box-shadow .2s;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    .textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .input:focus, .textarea:focus {
+      border-color: #000;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.05);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center;
+      padding: 10px 20px; 
+      font-weight: 500; 
+      font-size: 14px; 
+      border-radius: 8px;
+      border: 1px solid #d4d4d4; 
+      background: #fff; 
+      color: #1a1a1a;
+      cursor: pointer; 
+      transition: all .2s;
+      font-family: inherit;
+    }
+    .btn:hover { 
+      background: #f5f5f5;
+      border-color: #a3a3a3;
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
+    .btn-primary { 
+      border-color: #000; 
+      background: #000; 
+      color: #fff; 
+    }
+    .btn-primary:hover { 
+      background: #333;
+      border-color: #333;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ============== OUTPUT ============== */
+    .output {
+      white-space: pre-wrap;
+      line-height: 1.8;
+      color: #1a1a1a;
+      font-size: 14px;
+      padding: 16px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border: 1px solid #e5e5e5;
+    }
+
+    .success-msg {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-top: 16px;
+      display: none;
+    }
+    .success-msg.show {
+      display: block;
+      animation: fadeIn .3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============== RESPONSIVE ============== */
+    @media (max-width: 640px) {
+      .wrapper { padding: 24px 16px; }
+      .card { padding: 24px; }
+      .btn-group { flex-direction: column; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Hero -->
+    <section class="hero">
+      <h1 class="hero-headline">Báo cáo buổi test</h1>
+      <p class="hero-sub">Điền thông tin để tạo nội dung báo cáo nhanh chóng và chuyên nghiệp.</p>
+    </section>
+
+    <!-- Form -->
+    <div class="card">
+      <h2>Thông tin buổi test</h2>
+      <form id="reportForm">
+        <div class="form-group">
+          <label class="label" for="hoTen">Họ tên bé</label>
+          <input class="input" type="text" id="hoTen" placeholder="VD: Nguyễn Văn A" required />
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="ngaySinh">Ngày tháng năm sinh</label>
+          <input class="input" type="date" id="ngaySinh" required />
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="truong">Trường đang học</label>
+          <input class="input" type="text" id="truong" placeholder="VD: Trường Tiểu học ABC" required />
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="testMon">Test môn gì</label>
+          <select class="input" id="testMon" required>
+            <option value="">-- Chọn môn --</option>
+            <option value="Mầm Non Công Nghệ">Mầm Non Công Nghệ</option>
+            <option value="Khám phá Robotic">Khám phá Robotic</option>
+            <option value="Bé làm Game">Bé làm Game</option>
+            <option value="Siêu Nhân Lập Trình">Siêu Nhân Lập Trình</option>
+            <option value="Digi SteamArt">Digi SteamArt</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="gvTest">GV test</label>
+          <select class="input" id="gvTest" required>
+            <option value="">-- Chọn giáo viên --</option>
+            <option value="Nguyễn Hữu Luật">Nguyễn Hữu Luật</option>
+            <option value="Nguyễn Đức Trung">Nguyễn Đức Trung</option>
+            <option value="Trần Khắc Huân">Trần Khắc Huân</option>
+            <option value="Trần Thị Phương Uyên">Trần Thị Phương Uyên</option>
+            <option value="Nguyễn Thanh Ngọc">Nguyễn Thanh Ngọc</option>
+            <option value="Nguyễn Hữu Tuấn Khang">Nguyễn Hữu Tuấn Khang</option>
+            <option value="Võ Tấn Lộc">Võ Tấn Lộc</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="gvDanhGia">GV đánh giá bé học được từ HP mấy?</label>
+          <select class="input" id="gvDanhGia" required>
+            <option value="">-- Chọn --</option>
+            <option value="HP 1">HP 1</option>
+            <option value="HP 2">HP 2</option>
+            <option value="HP 3">HP 3</option>
+            <option value="HP 4">HP 4</option>
+            <option value="HP 5">HP 5</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="haoHung">Con có hào hứng không?</label>
+          <textarea class="textarea" id="haoHung" placeholder="VD: Con rất hào hứng và tập trung trong suốt buổi học..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="banKhoan">PH băn khoăn / thích thú điều gì?</label>
+          <textarea class="textarea" id="banKhoan" placeholder="VD: Phụ huynh quan tâm về lộ trình học, con thích thú với phần thực hành..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="baoPhi">Báo phí như thế nào?</label>
+          <textarea class="textarea" id="baoPhi" placeholder="VD: PH đã được tư vấn về học phí, gói học..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="lopHoc">Lớp có thể học / thời gian rảnh</label>
+          <textarea class="textarea" id="lopHoc" placeholder="VD: Thứ 3, 5 từ 17h-18h30 hoặc Thứ 7, CN sáng..." required></textarea>
+        </div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary">Tạo nội dung</button>
+          <button type="button" id="resetBtn" class="btn">Làm mới form</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Result card -->
+    <div class="card" id="resultCard" style="display: none;">
+      <h2>Nội dung báo cáo</h2>
+      <div class="output" id="output"></div>
+      <div class="btn-group" style="margin-top: 24px;">
+        <button id="copyBtn" class="btn btn-primary">Copy nội dung</button>
+        <button id="editBtn" class="btn">Chỉnh sửa</button>
+      </div>
+      <div class="success-msg" id="successMsg">✓ Đã copy vào clipboard!</div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('reportForm');
+    const outputDiv = document.getElementById('output');
+    const resultCard = document.getElementById('resultCard');
+    const copyBtn = document.getElementById('copyBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const editBtn = document.getElementById('editBtn');
+    const successMsg = document.getElementById('successMsg');
+
+    // Load saved data from localStorage on page load
+    window.addEventListener('DOMContentLoaded', function() {
+      const savedData = localStorage.getItem('formData');
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        Object.keys(data).forEach(key => {
+          const input = document.getElementById(key);
+          if (input) input.value = data[key];
+        });
+      }
+    });
+
+    // Save form data to localStorage on input
+    form.addEventListener('input', function() {
+      const formData = {};
+      const inputs = form.querySelectorAll('input, select, textarea');
+      inputs.forEach(input => {
+        formData[input.id] = input.value;
+      });
+      localStorage.setItem('formData', JSON.stringify(formData));
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const hoTen = document.getElementById('hoTen').value.trim();
+      const ngaySinh = document.getElementById('ngaySinh').value;
+      const truong = document.getElementById('truong').value.trim();
+      const testMon = document.getElementById('testMon').value;
+      const gvTest = document.getElementById('gvTest').value;
+      const gvDanhGia = document.getElementById('gvDanhGia').value;
+      const haoHung = document.getElementById('haoHung').value.trim();
+      const banKhoan = document.getElementById('banKhoan').value.trim();
+      const baoPhi = document.getElementById('baoPhi').value.trim();
+      const lopHoc = document.getElementById('lopHoc').value.trim();
+
+      // Format date
+      let formattedDate = '';
+      if (ngaySinh) {
+        const date = new Date(ngaySinh);
+        formattedDate = date.toLocaleDateString('vi-VN');
+      }
+
+      const content = `Họ tên bé: ${hoTen}
+Ngày tháng năm sinh: ${formattedDate}
+Trường đang học: ${truong}
+Test môn gì: ${testMon}
+GV test: ${gvTest}
+GV đánh giá bé học được môn gì bắt đầu từ HP mấy: ${gvDanhGia}
+Con có hào hứng không: ${haoHung}
+PH băn khoăn điều gì? Thích thú điều gì không: ${banKhoan}
+Báo phí như thế nào: ${baoPhi}
+Lớp có thể học hoặc thời gian rảnh của bạn: ${lopHoc}`;
+
+      outputDiv.textContent = content;
+      resultCard.style.display = 'block';
+      
+      // Smooth scroll to result
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    copyBtn.addEventListener('click', function () {
+      navigator.clipboard.writeText(outputDiv.textContent).then(() => {
+        successMsg.classList.add('show');
+        setTimeout(() => {
+          successMsg.classList.remove('show');
+        }, 3000);
+      }).catch(() => {
+        alert('Không thể copy, vui lòng thử thủ công.');
+      });
+    });
+
+    resetBtn.addEventListener('click', function() {
+      if (confirm('Bạn có chắc muốn xóa toàn bộ dữ liệu form?')) {
+        form.reset();
+        localStorage.removeItem('formData');
+        resultCard.style.display = 'none';
+      }
+    });
+
+    editBtn.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('hoTen').focus();
+    });
+  </script>
+</body>
+</html>
