@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,8 +11,17 @@
 
   <style>
     /* ============== RESET + THEME ============== */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
     body {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -22,9 +32,9 @@
     }
 
     /* ============== CONTAINER ============== */
-    .wrapper { 
-      max-width: 900px; 
-      margin: 0 auto; 
+    .wrapper {
+      max-width: 900px;
+      margin: 0 auto;
       padding: 40px 20px;
     }
 
@@ -34,12 +44,14 @@
       margin-bottom: 48px;
       padding: 24px 0;
     }
+
     .hero-headline {
       font-size: clamp(28px, 5vw, 36px);
       font-weight: 700;
       color: #1a1a1a;
       margin-bottom: 12px;
     }
+
     .hero-sub {
       font-size: 16px;
       color: #666;
@@ -55,43 +67,50 @@
       padding: 32px;
       margin-bottom: 20px;
     }
-    .card h2 { 
-      font-size: 20px; 
+
+    .card h2 {
+      font-size: 20px;
       font-weight: 600;
       margin-bottom: 24px;
       color: #1a1a1a;
     }
 
     /* ============== FORM ============== */
-    .form-group { 
+    .form-group {
       margin-bottom: 20px;
     }
-    .label { 
-      display: block; 
-      font-size: 14px; 
-      font-weight: 500; 
+
+    .label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
       color: #333;
       margin-bottom: 6px;
     }
-    .input, .textarea {
-      width: 100%; 
-      padding: 10px 14px; 
+
+    .input,
+    .textarea {
+      width: 100%;
+      padding: 10px 14px;
       border-radius: 8px;
-      border: 1px solid #d4d4d4; 
-      background: #fff; 
+      border: 1px solid #d4d4d4;
+      background: #fff;
       color: #1a1a1a;
-      outline: none; 
+      outline: none;
       transition: border-color .2s, box-shadow .2s;
       font-family: inherit;
       font-size: 14px;
     }
+
     .textarea {
       resize: vertical;
       min-height: 80px;
     }
-    .input:focus, .textarea:focus {
+
+    .input:focus,
+    .textarea:focus {
       border-color: #000;
-      box-shadow: 0 0 0 3px rgba(0,0,0,.05);
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, .05);
     }
 
     .btn-group {
@@ -99,37 +118,43 @@
       gap: 12px;
       flex-wrap: wrap;
     }
+
     .btn {
-      display: inline-flex; 
-      align-items: center; 
+      display: inline-flex;
+      align-items: center;
       justify-content: center;
-      padding: 10px 20px; 
-      font-weight: 500; 
-      font-size: 14px; 
+      padding: 10px 20px;
+      font-weight: 500;
+      font-size: 14px;
       border-radius: 8px;
-      border: 1px solid #d4d4d4; 
-      background: #fff; 
+      border: 1px solid #d4d4d4;
+      background: #fff;
       color: #1a1a1a;
-      cursor: pointer; 
+      cursor: pointer;
       transition: all .2s;
       font-family: inherit;
     }
-    .btn:hover { 
+
+    .btn:hover {
       background: #f5f5f5;
       border-color: #a3a3a3;
     }
+
     .btn:active {
       transform: translateY(1px);
     }
-    .btn-primary { 
-      border-color: #000; 
-      background: #000; 
-      color: #fff; 
+
+    .btn-primary {
+      border-color: #000;
+      background: #000;
+      color: #fff;
     }
-    .btn-primary:hover { 
+
+    .btn-primary:hover {
       background: #333;
       border-color: #333;
     }
+
     .btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -157,31 +182,50 @@
       margin-top: 16px;
       display: none;
     }
+
     .success-msg.show {
       display: block;
       animation: fadeIn .3s;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* ============== RESPONSIVE ============== */
     @media (max-width: 640px) {
-      .wrapper { padding: 24px 16px; }
-      .card { padding: 24px; }
-      .btn-group { flex-direction: column; }
-      .btn { width: 100%; }
+      .wrapper {
+        padding: 24px 16px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="wrapper">
     <!-- Hero -->
     <section class="hero">
       <h1 class="hero-headline">Báo cáo buổi test</h1>
-      <p class="hero-sub">Điền thông tin để tạo nội dung báo cáo nhanh chóng và chuyên nghiệp.</p>
     </section>
 
     <!-- Form -->
@@ -212,6 +256,8 @@
             <option value="Bé làm Game">Bé làm Game</option>
             <option value="Siêu Nhân Lập Trình">Siêu Nhân Lập Trình</option>
             <option value="Digi SteamArt">Digi SteamArt</option>
+            <option value="Digi Multimedia">Digi Multimedia</option>
+            <option value="Thế Giới Vạn Vật Thông Minh">Thế Giới Vạn Vật Thông Minh</option>
           </select>
         </div>
 
@@ -243,22 +289,27 @@
 
         <div class="form-group">
           <label class="label" for="haoHung">Con có hào hứng không?</label>
-          <textarea class="textarea" id="haoHung" placeholder="VD: Con rất hào hứng và tập trung trong suốt buổi học..." required></textarea>
+          <textarea class="textarea" id="haoHung" placeholder="VD: Con rất hào hứng và tập trung trong suốt buổi học..."
+            required></textarea>
         </div>
 
         <div class="form-group">
           <label class="label" for="banKhoan">PH băn khoăn / thích thú điều gì?</label>
-          <textarea class="textarea" id="banKhoan" placeholder="VD: Phụ huynh quan tâm về lộ trình học, con thích thú với phần thực hành..." required></textarea>
+          <textarea class="textarea" id="banKhoan"
+            placeholder="VD: Phụ huynh quan tâm về lộ trình học, con thích thú với phần thực hành..."
+            required></textarea>
         </div>
 
         <div class="form-group">
           <label class="label" for="baoPhi">Báo phí như thế nào?</label>
-          <textarea class="textarea" id="baoPhi" placeholder="VD: PH đã được tư vấn về học phí, gói học..." required></textarea>
+          <textarea class="textarea" id="baoPhi" placeholder="VD: PH đã được tư vấn về học phí, gói học..."
+            required></textarea>
         </div>
 
         <div class="form-group">
           <label class="label" for="lopHoc">Lớp có thể học / thời gian rảnh</label>
-          <textarea class="textarea" id="lopHoc" placeholder="VD: Thứ 3, 5 từ 17h-18h30 hoặc Thứ 7, CN sáng..." required></textarea>
+          <textarea class="textarea" id="lopHoc" placeholder="VD: Thứ 3, 5 từ 17h-18h30 hoặc Thứ 7, CN sáng..."
+            required></textarea>
         </div>
 
         <div class="btn-group">
@@ -290,7 +341,7 @@
     const successMsg = document.getElementById('successMsg');
 
     // Load saved data from localStorage on page load
-    window.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('DOMContentLoaded', function () {
       const savedData = localStorage.getItem('formData');
       if (savedData) {
         const data = JSON.parse(savedData);
@@ -302,7 +353,7 @@
     });
 
     // Save form data to localStorage on input
-    form.addEventListener('input', function() {
+    form.addEventListener('input', function () {
       const formData = {};
       const inputs = form.querySelectorAll('input, select, textarea');
       inputs.forEach(input => {
@@ -345,7 +396,7 @@ Lớp có thể học hoặc thời gian rảnh của bạn: ${lopHoc}`;
 
       outputDiv.textContent = content;
       resultCard.style.display = 'block';
-      
+
       // Smooth scroll to result
       resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
@@ -361,7 +412,7 @@ Lớp có thể học hoặc thời gian rảnh của bạn: ${lopHoc}`;
       });
     });
 
-    resetBtn.addEventListener('click', function() {
+    resetBtn.addEventListener('click', function () {
       if (confirm('Bạn có chắc muốn xóa toàn bộ dữ liệu form?')) {
         form.reset();
         localStorage.removeItem('formData');
@@ -369,10 +420,153 @@ Lớp có thể học hoặc thời gian rảnh của bạn: ${lopHoc}`;
       }
     });
 
-    editBtn.addEventListener('click', function() {
+    editBtn.addEventListener('click', function () {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       document.getElementById('hoTen').focus();
     });
   </script>
+  <script>
+    // === DANH SÁCH GỢI Ý CHO TỪNG FIELD ===
+    const suggestions = {
+      haoHung: [
+        "Con rất hào hứng và tập trung trong suốt buổi học, thường xuyên đặt câu hỏi và cười tươi khi hoàn thành bài tập.",
+        "Bé khá hào hứng, thích các phần thực hành nhưng đôi lúc còn hơi nhút nhát khi chia sẻ ý kiến.",
+        "Con hào hứng rõ rệt với các hoạt động lập trình/robot, mắt sáng lên khi thấy kết quả chạy thành công.",
+        "Bé tham gia tích cực, rất thích phần chơi game/robot và muốn làm thêm nhiều lần nữa.",
+        "Con ban đầu hơi rụt rè nhưng sau đó rất hào hứng, đặc biệt thích phần sáng tạo tự do.",
+        "Bé tập trung cao độ, liên tục cười và vỗ tay khi hoàn thành thử thách."
+      ],
+      banKhoan: [
+        "Phụ huynh quan tâm đến lộ trình học dài hạn và cách bé tiến bộ qua từng học phần.",
+        "PH hỏi kỹ về lịch học, học phí và cách hỗ trợ bé học ở nhà.",
+        "Phụ huynh rất thích chương trình, đặc biệt ấn tượng với phần thực hành sáng tạo của bé.",
+        "PH băn khoăn về thời gian học có phù hợp với lịch học chính khóa của con không.",
+        "Phụ huynh hào hứng với nội dung môn học, hỏi thêm về các dự án bé sẽ làm trong khóa chính.",
+        "PH thích việc bé được tự tay làm sản phẩm, hỏi về cách theo dõi tiến độ học tập của con.",
+        "Phụ huynh chưa có băn khoăn gì, rất ủng hộ và muốn đăng ký ngay."
+      ],
+      baoPhi: [
+        "Đã tư vấn chi tiết các gói học phí, phụ huynh đang cân nhắc và sẽ quyết định trong vài ngày tới.",
+        "PH đã được báo phí đầy đủ các gói, đồng ý mức học phí và dự kiến đăng ký trong tuần này.",
+        "Đã gửi bảng học phí chi tiết qua Zalo, phụ huynh sẽ trao đổi thêm với gia đình.",
+        "Phụ huynh thấy học phí hợp lý, đang xem lịch để chọn lớp phù hợp.",
+        "Đã báo phí và ưu đãi đăng ký sớm, PH rất quan tâm và hỏi thêm về chính sách hoàn phí.",
+        "PH đã hiểu rõ cấu trúc học phí, đang tính toán gói phù hợp với điều kiện gia đình.",
+        "Đã tư vấn học phí, phụ huynh hài lòng và hẹn cuối tuần sẽ chốt đăng ký."
+      ]
+    };
+
+    // === HÀM TẠO VÀ HIỂN THỊ DROPDOWN GỢI Ý ===
+    function createSuggestionsDropdown(textareaId, suggestionsList) {
+      const textarea = document.getElementById(textareaId);
+      let dropdown = document.getElementById(`suggestions-${textareaId}`);
+
+      // Tạo dropdown một lần duy nhất
+      if (!dropdown) {
+        dropdown = document.createElement('div');
+        dropdown.id = `suggestions-${textareaId}`;
+        dropdown.className = 'suggestions-dropdown';
+        textarea.parentNode.style.position = 'relative';
+        textarea.parentNode.appendChild(dropdown);
+      }
+
+      // Xử lý khi người dùng gõ
+      textarea.addEventListener('input', function () {
+        const query = this.value.toLowerCase().trim();
+        dropdown.innerHTML = '';
+
+        if (query === '') {
+          dropdown.style.display = 'none';
+          return;
+        }
+
+        const filtered = suggestionsList.filter(s => s.toLowerCase().includes(query));
+
+        if (filtered.length === 0) {
+          dropdown.style.display = 'none';
+          return;
+        }
+
+        filtered.forEach(suggestion => {
+          const item = document.createElement('div');
+          item.className = 'suggestion-item';
+          item.textContent = suggestion;
+
+          // Highlight phần khớp với query
+          const regex = new RegExp(`(${query})`, 'gi');
+          item.innerHTML = suggestion.replace(regex, '<strong>$1</strong>');
+
+          item.addEventListener('click', () => {
+            textarea.value = suggestion;
+            dropdown.style.display = 'none';
+            textarea.focus();
+
+            // Trigger input event để lưu vào localStorage
+            textarea.dispatchEvent(new Event('input'));
+          });
+
+          dropdown.appendChild(item);
+        });
+
+        dropdown.style.display = 'block';
+      });
+
+      // Ẩn dropdown khi click ra ngoài
+      document.addEventListener('click', function (e) {
+        if (!textarea.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.style.display = 'none';
+        }
+      });
+
+      // Ẩn khi focus ra khỏi textarea
+      textarea.addEventListener('blur', () => {
+        setTimeout(() => { dropdown.style.display = 'none'; }, 200);
+      });
+    }
+
+    // === THÊM STYLE CHO DROPDOWN ===
+    const style = document.createElement('style');
+    style.textContent = `
+  .suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #d4d4d4;
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: none;
+    margin-top: 4px;
+  }
+  .suggestion-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+  }
+  .suggestion-item:hover {
+    background: #f0f0f0;
+  }
+  .suggestion-item:last-child {
+    border-bottom: none;
+  }
+  .suggestion-item strong {
+    color: #000;
+    font-weight: 600;
+  }
+`;
+    document.head.appendChild(style);
+
+    // === KHỞI TẠO GỢI Ý CHO 3 TEXTAREA ===
+    createSuggestionsDropdown('haoHung', suggestions.haoHung);
+    createSuggestionsDropdown('banKhoan', suggestions.banKhoan);
+    createSuggestionsDropdown('baoPhi', suggestions.baoPhi);
+
+  </script>
 </body>
+
 </html>
