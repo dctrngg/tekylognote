@@ -239,7 +239,10 @@
 
         <div class="form-group">
           <label class="label" for="ngaySinh">Ngày tháng năm sinh</label>
-          <input class="input" type="date" id="ngaySinh" required />
+          <input class="input" type="text" id="ngaySinh" placeholder="DD/MM/YYYY" inputmode="numeric"
+            pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" required />
+          <small class="label" style="font-size:12px;color:#666;margin-top:6px;display:block;">Nhập theo định dạng
+            <strong>DD/MM/YYYY</strong></small>
         </div>
 
         <div class="form-group">
@@ -354,7 +357,15 @@
         const data = JSON.parse(savedData);
         Object.keys(data).forEach(key => {
           const input = document.getElementById(key);
-          if (input) input.value = data[key];
+          if (input) {
+            let val = data[key];
+            // Convert stored ISO date (yyyy-mm-dd) to DD/MM/YYYY for ngaySinh field
+            if (key === 'ngaySinh' && val && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+              const [y, m, d] = val.split('-');
+              val = `${d}/${m}/${y}`;
+            }
+            input.value = val;
+          }
         });
       }
     });
@@ -368,6 +379,28 @@
       });
       localStorage.setItem('formData', JSON.stringify(formData));
     });
+
+    // Auto-format ngaySinh as DD/MM/YYYY while typing and validate on blur
+    const ngaySinhInput = document.getElementById('ngaySinh');
+    if (ngaySinhInput) {
+      ngaySinhInput.addEventListener('input', function (e) {
+        const v = e.target.value.replace(/\D/g, '').slice(0, 8);
+        let out = v;
+        if (v.length >= 5) out = v.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
+        else if (v.length >= 3) out = v.replace(/(\d{2})(\d{1,2})/, '$1/$2');
+        e.target.value = out;
+      });
+
+      ngaySinhInput.addEventListener('blur', function (e) {
+        const val = e.target.value;
+        const pattern = /^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/;
+        if (val && !pattern.test(val)) {
+          e.target.setCustomValidity('Vui lòng nhập ngày theo định dạng DD/MM/YYYY');
+        } else {
+          e.target.setCustomValidity('');
+        }
+      });
+    }
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -383,11 +416,23 @@
       const baoPhi = document.getElementById('baoPhi').value.trim();
       const lopHoc = document.getElementById('lopHoc').value.trim();
 
-      // Format date
+      // Parse and validate date in DD/MM/YYYY
       let formattedDate = '';
       if (ngaySinh) {
-        const date = new Date(ngaySinh);
-        formattedDate = date.toLocaleDateString('vi-VN');
+        const parts = ngaySinh.split('/');
+        if (parts.length === 3) {
+          const day = parseInt(parts[0], 10);
+          const month = parseInt(parts[1], 10) - 1;
+          const year = parseInt(parts[2], 10);
+          const dateObj = new Date(year, month, day);
+          if (!isNaN(dateObj) && dateObj.getFullYear() === year && dateObj.getMonth() === month && dateObj.getDate() === day) {
+            formattedDate = `${String(day).padStart(2, '0')}/${String(parts[1]).padStart(2, '0')}/${year}`;
+          } else {
+            formattedDate = ngaySinh; // fallback to raw input
+          }
+        } else {
+          formattedDate = ngaySinh;
+        }
       }
 
       const content = `Họ tên bé: ${hoTen}
@@ -432,148 +477,235 @@ Lớp có thể học hoặc thời gian rảnh của bạn: ${lopHoc}`;
       document.getElementById('hoTen').focus();
     });
   </script>
-  <script>
-    // === DANH SÁCH GỢI Ý CHO TỪNG FIELD ===
-    const suggestions = {
-      haoHung: [
-        "Con rất hào hứng và tập trung trong suốt buổi học, thường xuyên đặt câu hỏi và cười tươi khi hoàn thành bài tập.",
-        "Bé khá hào hứng, thích các phần thực hành nhưng đôi lúc còn hơi nhút nhát khi chia sẻ ý kiến.",
-        "Con hào hứng rõ rệt với các hoạt động lập trình/robot, mắt sáng lên khi thấy kết quả chạy thành công.",
-        "Bé tham gia tích cực, rất thích phần chơi game/robot và muốn làm thêm nhiều lần nữa.",
-        "Con ban đầu hơi rụt rè nhưng sau đó rất hào hứng, đặc biệt thích phần sáng tạo tự do.",
-        "Bé tập trung cao độ, liên tục cười và vỗ tay khi hoàn thành thử thách."
-      ],
-      banKhoan: [
-        "Phụ huynh quan tâm đến lộ trình học dài hạn và cách bé tiến bộ qua từng học phần.",
-        "PH hỏi kỹ về lịch học, học phí và cách hỗ trợ bé học ở nhà.",
-        "Phụ huynh rất thích chương trình, đặc biệt ấn tượng với phần thực hành sáng tạo của bé.",
-        "PH băn khoăn về thời gian học có phù hợp với lịch học chính khóa của con không.",
-        "Phụ huynh hào hứng với nội dung môn học, hỏi thêm về các dự án bé sẽ làm trong khóa chính.",
-        "PH thích việc bé được tự tay làm sản phẩm, hỏi về cách theo dõi tiến độ học tập của con.",
-        "Phụ huynh chưa có băn khoăn gì, rất ủng hộ và muốn đăng ký ngay."
-      ],
-      baoPhi: [
-        "Đã tư vấn chi tiết các gói học phí, phụ huynh đang cân nhắc và sẽ quyết định trong vài ngày tới.",
-        "PH đã được báo phí đầy đủ các gói, đồng ý mức học phí và dự kiến đăng ký trong tuần này.",
-        "Đã gửi bảng học phí chi tiết qua Zalo, phụ huynh sẽ trao đổi thêm với gia đình.",
-        "Phụ huynh thấy học phí hợp lý, đang xem lịch để chọn lớp phù hợp.",
-        "Đã báo phí và ưu đãi đăng ký sớm, PH rất quan tâm và hỏi thêm về chính sách hoàn phí.",
-        "PH đã hiểu rõ cấu trúc học phí, đang tính toán gói phù hợp với điều kiện gia đình.",
-        "Đã tư vấn học phí, phụ huynh hài lòng và hẹn cuối tuần sẽ chốt đăng ký."
-      ]
-    };
+<script>
+  // === DANH SÁCH GỢI Ý CHO TỪNG FIELD ===
+  const suggestions = {
+    haoHung: [
+      "Hào hứng",
+      "Không thích lắm",
+      "Tập trung tốt",
+      "Không tập trung",
+      "Tương tác tốt với giáo viên",
+      "Rụt rè",
+      "Chủ động đặt câu hỏi",
+      "Tiếp thu tốt",
+      "Tiếp thu khá",
+      "Tư duy tốt",
+      "Thao tác máy tính tốt",
+      "Thao tác máy tính cần cải thiện"
+    ],
+    banKhoan: [
+      "Phụ huynh quan tâm",
+      "Phụ huynh không thật sự quan tâm",
+      "Học phí cao hơn khả năng chi trả",
+      "Chờ đến thời điểm phù hợp hơn mới đăng ký",
+      "Muốn ghi danh lộ trình ngắn",
+      "So sánh với trung tâm khác",
+      "Thời gian học chưa phù hợp cần sắp xếp lại",
+      "Học nhiều môn sợ quá tải",
+      "Gia đình chưa sắp xếp được việc đưa đón",
+      "Cần tham khảo thêm ý kiến bé",
+      "Cần tham khảo thêm ý kiến gia đình",
+      "Sợ bé nản, bỏ ngang",
+      "Sợ bé còn nhỏ chưa tập trung",
+      "Phản vấn học online hay off",
+      "Bế đặc biệt tư vấn coaching 1-1",
+      "Bế đặc biệt tư vấn 1hp không cam kết",
+      "Học offset học phần 1 4 buổi coaching offline bao phí"
+    ],
+    baoPhi: [
+      "Đã tư vấn chi tiết các gói học phí, phụ huynh đang cân nhắc và sẽ quyết định trong vài ngày tới.",
+      "PH đã được báo phí đầy đủ các gói, đồng ý mức học phí và dự kiến đăng ký trong tuần này.",
+      "Đã gửi bảng học phí chi tiết qua Zalo, phụ huynh sẽ trao đổi thêm với gia đình.",
+      "Phụ huynh thấy học phí hợp lý, đang xem lịch để chọn lớp phù hợp.",
+      "Đã báo phí và ưu đãi đăng ký sớm, PH rất quan tâm và hỏi thêm về chính sách hoàn phí.",
+      "PH đã hiểu rõ cấu trúc học phí, đang tính toán gói phù hợp với điều kiện gia đình.",
+      "Đã tư vấn học phí, phụ huynh hài lòng và hẹn cuối tuần sẽ chốt đăng ký."
+    ]
+  };
 
-    // === HÀM TẠO VÀ HIỂN THỊ DROPDOWN GỢI Ý ===
-    function createSuggestionsDropdown(textareaId, suggestionsList) {
-      const textarea = document.getElementById(textareaId);
-      let dropdown = document.getElementById(`suggestions-${textareaId}`);
+  // === AUTOCOMPLETE ĐÃ SỬA LỖI - NỐI BẰNG DẤU PHẨY, KHÔNG THỪA, KHÔNG MẤT CHỮ ===
+  function createAutocomplete(textareaId, suggestionsList) {
+    const textarea = document.getElementById(textareaId);
+    let dropdown = document.getElementById(`autocomplete-${textareaId}`);
+    let items = [];
+    let selectedIndex = -1;
 
-      // Tạo dropdown một lần duy nhất
-      if (!dropdown) {
-        dropdown = document.createElement('div');
-        dropdown.id = `suggestions-${textareaId}`;
-        dropdown.className = 'suggestions-dropdown';
-        textarea.parentNode.style.position = 'relative';
-        textarea.parentNode.appendChild(dropdown);
-      }
-
-      // Xử lý khi người dùng gõ
-      textarea.addEventListener('input', function () {
-        const query = this.value.toLowerCase().trim();
-        dropdown.innerHTML = '';
-
-        if (query === '') {
-          dropdown.style.display = 'none';
-          return;
-        }
-
-        const filtered = suggestionsList.filter(s => s.toLowerCase().includes(query));
-
-        if (filtered.length === 0) {
-          dropdown.style.display = 'none';
-          return;
-        }
-
-        filtered.forEach(suggestion => {
-          const item = document.createElement('div');
-          item.className = 'suggestion-item';
-          item.textContent = suggestion;
-
-          // Highlight phần khớp với query
-          const regex = new RegExp(`(${query})`, 'gi');
-          item.innerHTML = suggestion.replace(regex, '<strong>$1</strong>');
-
-          item.addEventListener('click', () => {
-            textarea.value = suggestion;
-            dropdown.style.display = 'none';
-            textarea.focus();
-
-            // Trigger input event để lưu vào localStorage
-            textarea.dispatchEvent(new Event('input'));
-          });
-
-          dropdown.appendChild(item);
-        });
-
-        dropdown.style.display = 'block';
-      });
-
-      // Ẩn dropdown khi click ra ngoài
-      document.addEventListener('click', function (e) {
-        if (!textarea.contains(e.target) && !dropdown.contains(e.target)) {
-          dropdown.style.display = 'none';
-        }
-      });
-
-      // Ẩn khi focus ra khỏi textarea
-      textarea.addEventListener('blur', () => {
-        setTimeout(() => { dropdown.style.display = 'none'; }, 200);
-      });
+    if (!dropdown) {
+      dropdown = document.createElement('div');
+      dropdown.id = `autocomplete-${textareaId}`;
+      dropdown.className = 'autocomplete-dropdown';
+      textarea.parentNode.style.position = 'relative';
+      textarea.parentNode.appendChild(dropdown);
     }
 
-    // === THÊM STYLE CHO DROPDOWN ===
-    const style = document.createElement('style');
-    style.textContent = `
-  .suggestions-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: #fff;
-    border: 1px solid #d4d4d4;
-    border-radius: 8px;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 10;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    display: none;
-    margin-top: 4px;
-  }
-  .suggestion-item {
-    padding: 10px 14px;
-    cursor: pointer;
-    font-size: 14px;
-    border-bottom: 1px solid #eee;
-  }
-  .suggestion-item:hover {
-    background: #f0f0f0;
-  }
-  .suggestion-item:last-child {
-    border-bottom: none;
-  }
-  .suggestion-item strong {
-    color: #000;
-    font-weight: 600;
-  }
-`;
-    document.head.appendChild(style);
+    // Lấy thông tin từ đang gõ trước con trỏ
+    function getCurrentWordInfo() {
+      const value = textarea.value;
+      const cursorPos = textarea.selectionStart;
+      const textBefore = value.substring(0, cursorPos);
+      const textAfter = value.substring(cursorPos);
 
-    // === KHỞI TẠO GỢI Ý CHO 3 TEXTAREA ===
-    createSuggestionsDropdown('haoHung', suggestions.haoHung);
-    createSuggestionsDropdown('banKhoan', suggestions.banKhoan);
-    createSuggestionsDropdown('baoPhi', suggestions.baoPhi);
+      // Tìm từ cuối cùng trước con trỏ (không tính dấu cách hoặc phẩy)
+      const match = textBefore.match(/([^,\s][^,\s]*)$/);
+      const currentWord = match ? match[0].toLowerCase() : '';
+      const startPos = match ? cursorPos - match[0].length : cursorPos;
 
-  </script>
+      return { currentWord, startPos, textBefore, textAfter };
+    }
+
+    function showDropdown(filtered) {
+      dropdown.innerHTML = '';
+      items = filtered;
+
+      if (filtered.length === 0) {
+        dropdown.style.display = 'none';
+        return;
+      }
+
+      filtered.forEach((suggestion, index) => {
+        const item = document.createElement('div');
+        item.className = 'autocomplete-item';
+        item.textContent = suggestion;
+        item.addEventListener('click', () => selectSuggestion(index));
+        item.addEventListener('mousemove', () => highlightItem(index));
+        dropdown.appendChild(item);
+      });
+
+      selectedIndex = 0;
+      highlightItem(0);
+      dropdown.style.display = 'block';
+    }
+
+    function hideDropdown() {
+      dropdown.style.display = 'none';
+      selectedIndex = -1;
+    }
+
+    function highlightItem(index) {
+      const allItems = dropdown.querySelectorAll('.autocomplete-item');
+      allItems.forEach((el, i) => el.classList.toggle('highlighted', i === index));
+      selectedIndex = index;
+    }
+
+    function selectSuggestion(index) {
+      if (index < 0 || index >= items.length) return;
+      const suggestion = items[index];
+      const { currentWord, startPos, textBefore, textAfter } = getCurrentWordInfo();
+
+      // Cắt bỏ phần từ đang gõ dở (nếu có khớp)
+      let leftPart = textBefore.substring(0, startPos);
+
+      // Trim phía cuối leftPart để chuẩn bị thêm dấu phẩy
+      leftPart = leftPart.trim();
+
+      // Nếu đã có nội dung → thêm dấu phẩy + khoảng trắng (chỉ khi chưa kết thúc bằng phẩy)
+      if (leftPart.length > 0) {
+        if (!leftPart.endsWith(',')) {
+          leftPart += ',';
+        }
+        leftPart += ' '; // thêm khoảng trắng sau phẩy
+      }
+
+      // Ghép lại: phần trái + gợi ý mới + phần phải
+      textarea.value = leftPart + suggestion + textAfter;
+
+      // Đặt con trỏ ngay sau gợi ý vừa thêm
+      const newCursorPos = leftPart.length + suggestion.length;
+      textarea.focus();
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+
+      // Trigger input để lưu và cập nhật lại dropdown nếu cần
+      textarea.dispatchEvent(new Event('input'));
+
+      hideDropdown();
+    }
+
+    function filterSuggestions() {
+      const { currentWord } = getCurrentWordInfo();
+      if (currentWord === '') {
+        hideDropdown();
+        return;
+      }
+
+      const filtered = suggestionsList.filter(s =>
+        s.toLowerCase().includes(currentWord)
+      );
+
+      showDropdown(filtered);
+    }
+
+    // Events
+    textarea.addEventListener('input', filterSuggestions);
+    textarea.addEventListener('keydown', function (e) {
+      if (!dropdown.style.display || dropdown.style.display === 'none') return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = (selectedIndex + 1) % items.length;
+        highlightItem(selectedIndex);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+        highlightItem(selectedIndex);
+      } else if (e.key === 'Enter' || e.key === 'Tab') {
+        e.preventDefault();
+        selectSuggestion(selectedIndex >= 0 ? selectedIndex : 0);
+      } else if (e.key === 'Escape') {
+        hideDropdown();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!textarea.contains(e.target) && !dropdown.contains(e.target)) {
+        hideDropdown();
+      }
+    });
+
+    textarea.addEventListener('focus', filterSuggestions);
+  }
+
+  // === STYLE GIỮ NGUYÊN ===
+  const style = document.createElement('style');
+  style.textContent = `
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid #d4d4d4;
+      border-radius: 8px;
+      max-height: 240px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      display: none;
+      margin-top: 4px;
+    }
+    .autocomplete-item {
+      padding: 12px 14px;
+      cursor: pointer;
+      font-size: 14px;
+      border-bottom: 1px solid #eee;
+    }
+    .autocomplete-item:hover,
+    .autocomplete-item.highlighted {
+      background: #f0f8ff;
+      color: #000;
+      font-weight: 500;
+    }
+    .autocomplete-item:last-child {
+      border-bottom: none;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // === KHỞI TẠO ===
+  createAutocomplete('haoHung', suggestions.haoHung);
+  createAutocomplete('banKhoan', suggestions.banKhoan);
+  createAutocomplete('baoPhi', suggestions.baoPhi);
+</script>
 </body>
 
 </html>
