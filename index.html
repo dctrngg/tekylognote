@@ -513,18 +513,9 @@ Lớp có thể học hoặc thời gian rảnh của bạn: ${lopHoc}`;
       "Bế đặc biệt tư vấn 1hp không cam kết",
       "Học offset học phần 1 4 buổi coaching offline bao phí"
     ],
-    baoPhi: [
-      "Đã tư vấn chi tiết các gói học phí, phụ huynh đang cân nhắc và sẽ quyết định trong vài ngày tới.",
-      "PH đã được báo phí đầy đủ các gói, đồng ý mức học phí và dự kiến đăng ký trong tuần này.",
-      "Đã gửi bảng học phí chi tiết qua Zalo, phụ huynh sẽ trao đổi thêm với gia đình.",
-      "Phụ huynh thấy học phí hợp lý, đang xem lịch để chọn lớp phù hợp.",
-      "Đã báo phí và ưu đãi đăng ký sớm, PH rất quan tâm và hỏi thêm về chính sách hoàn phí.",
-      "PH đã hiểu rõ cấu trúc học phí, đang tính toán gói phù hợp với điều kiện gia đình.",
-      "Đã tư vấn học phí, phụ huynh hài lòng và hẹn cuối tuần sẽ chốt đăng ký."
-    ]
   };
 
-  // === AUTOCOMPLETE ĐÃ SỬA LỖI - NỐI BẰNG DẤU PHẨY, KHÔNG THỪA, KHÔNG MẤT CHỮ ===
+  // === AUTOCOMPLETE ĐÃ SỬA: HIỆN TOÀN BỘ KHI FOCUS ===
   function createAutocomplete(textareaId, suggestionsList) {
     const textarea = document.getElementById(textareaId);
     let dropdown = document.getElementById(`autocomplete-${textareaId}`);
@@ -539,14 +530,12 @@ Lớp có thể học hoặc thời gian rảnh của bạn: ${lopHoc}`;
       textarea.parentNode.appendChild(dropdown);
     }
 
-    // Lấy thông tin từ đang gõ trước con trỏ
     function getCurrentWordInfo() {
       const value = textarea.value;
       const cursorPos = textarea.selectionStart;
       const textBefore = value.substring(0, cursorPos);
       const textAfter = value.substring(cursorPos);
 
-      // Tìm từ cuối cùng trước con trỏ (không tính dấu cách hoặc phẩy)
       const match = textBefore.match(/([^,\s][^,\s]*)$/);
       const currentWord = match ? match[0].toLowerCase() : '';
       const startPos = match ? cursorPos - match[0].length : cursorPos;
@@ -593,50 +582,60 @@ Lớp có thể học hoặc thời gian rảnh của bạn: ${lopHoc}`;
       const suggestion = items[index];
       const { currentWord, startPos, textBefore, textAfter } = getCurrentWordInfo();
 
-      // Cắt bỏ phần từ đang gõ dở (nếu có khớp)
       let leftPart = textBefore.substring(0, startPos);
-
-      // Trim phía cuối leftPart để chuẩn bị thêm dấu phẩy
       leftPart = leftPart.trim();
 
-      // Nếu đã có nội dung → thêm dấu phẩy + khoảng trắng (chỉ khi chưa kết thúc bằng phẩy)
       if (leftPart.length > 0) {
         if (!leftPart.endsWith(',')) {
           leftPart += ',';
         }
-        leftPart += ' '; // thêm khoảng trắng sau phẩy
+        leftPart += ' ';
       }
 
-      // Ghép lại: phần trái + gợi ý mới + phần phải
       textarea.value = leftPart + suggestion + textAfter;
 
-      // Đặt con trỏ ngay sau gợi ý vừa thêm
       const newCursorPos = leftPart.length + suggestion.length;
       textarea.focus();
       textarea.setSelectionRange(newCursorPos, newCursorPos);
 
-      // Trigger input để lưu và cập nhật lại dropdown nếu cần
       textarea.dispatchEvent(new Event('input'));
-
       hideDropdown();
     }
 
-    function filterSuggestions() {
+    // === THAY ĐỔI CHÍNH: HIỆN TOÀN BỘ KHI FOCUS ===
+    function updateDropdown() {
       const { currentWord } = getCurrentWordInfo();
+
       if (currentWord === '') {
-        hideDropdown();
-        return;
+        // Khi không có từ đang gõ → hiện toàn bộ danh sách
+        showDropdown(suggestionsList);
+      } else {
+        // Khi đang gõ → lọc như cũ
+        const filtered = suggestionsList.filter(s =>
+          s.toLowerCase().includes(currentWord)
+        );
+        showDropdown(filtered);
       }
-
-      const filtered = suggestionsList.filter(s =>
-        s.toLowerCase().includes(currentWord)
-      );
-
-      showDropdown(filtered);
     }
 
     // Events
-    textarea.addEventListener('input', filterSuggestions);
+    textarea.addEventListener('input', updateDropdown);
+
+    // Khi focus vào textarea → hiện toàn bộ gợi ý
+    textarea.addEventListener('focus', () => {
+      updateDropdown();
+    });
+
+    // Khi blur → ẩn dropdown (trừ khi đang click vào item)
+    textarea.addEventListener('blur', () => {
+      // Delay một chút để có thời gian click vào item
+      setTimeout(() => {
+        if (!dropdown.contains(document.activeElement)) {
+          hideDropdown();
+        }
+      }, 200);
+    });
+
     textarea.addEventListener('keydown', function (e) {
       if (!dropdown.style.display || dropdown.style.display === 'none') return;
 
@@ -661,8 +660,6 @@ Lớp có thể học hoặc thời gian rảnh của bạn: ${lopHoc}`;
         hideDropdown();
       }
     });
-
-    textarea.addEventListener('focus', filterSuggestions);
   }
 
   // === STYLE GIỮ NGUYÊN ===
@@ -704,7 +701,6 @@ Lớp có thể học hoặc thời gian rảnh của bạn: ${lopHoc}`;
   // === KHỞI TẠO ===
   createAutocomplete('haoHung', suggestions.haoHung);
   createAutocomplete('banKhoan', suggestions.banKhoan);
-  createAutocomplete('baoPhi', suggestions.baoPhi);
 </script>
 </body>
 
